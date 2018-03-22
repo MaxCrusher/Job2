@@ -1,0 +1,7 @@
+.box{
+    background-color: darkturquoise;
+    text-align: center;
+    vertical-align: middle;
+    float: left;
+    border: 1px green solid;
+}

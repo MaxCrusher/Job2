@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+.block3{
+  margin-left: 20%;
+  border: 5px red solid;
+  padding: 2px;
+  width: 500px;
+  height: 500px;
+}
+

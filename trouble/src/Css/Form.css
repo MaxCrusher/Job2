@@ -1,0 +1,13 @@
+.Form{
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px solid #ff0000 ;
+    display: inline-block;
+};
+.Login{
+    margin: 20px;
+};
+.button{
+    margin: 20px;
+    background-color: white;
+};
