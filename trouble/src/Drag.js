@@ -1,88 +1,100 @@
-import React, { Component } from 'react';
-import {arrayMove } from 'react-sortable-hoc';
-import SortableList from './Components/SortableList';
-import './App.css';
-let mass = [];
-let i=0;
-class App extends Component {
+import React, { Component } from 'react'
+import { arrayMove } from 'react-sortable-hoc'
+import { Link } from 'react-router-dom'
+import SortableList from './Components/SortableList'
+import './App.css'
 
-  static onEnter(nextState, replace){
-    const local = window.localStorage.getItem('car')
-    console.log(local);
-    if(local!=="ford")
-    {
-      replace('/');
-    }
-  }
+const cookie = require('./Components/FunctionCookie/FunctionCookie.js')
+
+let mass = []
+
+class Drag extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      mas:[],
-      id:1,
-      check:false
+      mas: [],
+      id: 1,
     }
-    this.onSortEnd = this.onSortEnd.bind(this);
-    this.ChangeId = this.ChangeId.bind(this);
+    this.onSortEnd = this.onSortEnd.bind(this)
+    this.ChangeId = this.ChangeId.bind(this)
   }
-  ChangeId(e){
-    this.setState({
-      id: e.target.value
-    })
-  }
-
-  Change()
-  {
-    mass=[];
-    var i = 0;
-    while(i<Math.pow(this.state.id,2)){
-      mass.push(i);
-      i= i+1;
+  componentWillMount() {
+    if (cookie.getCookie('name') === 'user') {
+      console.log('+')
     }
-    mass.sort(()=>Math.random() - 0.5);
+  }
+
+  onSortEnd = ({ oldIndex, newIndex }) => {
     this.setState({
-      mas:mass,
-      check:false
+      mas: arrayMove(this.state.mas, oldIndex, newIndex),
+    })
+  };
+
+  ChangeId(e) {
+    this.setState({
+      id: e.target.value,
     })
   }
 
-  onSortEnd =({oldIndex, newIndex})=>{
+  Change() {
+    mass = []
+    let i = 0
+    while (i < this.state.id ** 2) {
+      mass.push(i)
+      i++
+    }
+    mass.sort(() => Math.random() - 0.5)
     this.setState({
-      mas: arrayMove(this.state.mas, oldIndex, newIndex)
-    });
-  }
-
-  Cool(){
-    this.state.mas.map((value, index)=>{
-      if(value===index){
-        i++;
-      }
-      else i=0;
-      if(i ===Math.pow(this.state.id,2)&&i!==0){
-        i=0;
-        this.setState({
-          check:true
-        });
-         alert("дааааааааааааааааааа");//setTimeout(()=>alert("дааааааааааааааааааа"),300)
-      }
+      mas: mass,
     })
   }
-  
+
+  Exit() {
+    fetch('/exit').then(res => {
+      res.json().then((data) => {
+        document.cookie = 'name=' + data.name
+        document.cookie = 'password=' + data.password
+      })
+    })
+  }
+  //                        <div>{this.Cool()}</div>
   render() {
-      return (
+    return (
+      <div>
         <div>
-          <div>
-            <p>
-              <input type = "text" name = "text" className="inputtext" onChange={this.ChangeId.bind(this)} value= {this.state.id} />
-              <button type = "button" name = "but" id = "inputbut" onClick={this.Change.bind(this) }>OK</button>
-            </p>
-          </div>
-          <SortableList mas={this.state.mas}
-                        onSortEnd={this.onSortEnd.bind(this)}
-                        axis='xy'
-                        size = {this.state.id} />
-                        <div>{this.Cool()}</div>
+          <p>
+            <input
+              type="text"
+              name="text"
+              className="inputtext"
+              onChange={this.ChangeId}
+              value={this.state.id}
+            />
+            <button
+              type="button"
+              name="but"
+              id="inputbut"
+              onClick={() => { this.Change() }}
+            >
+              OK
+            </button>
+          </p>
+          <p>
+            <label htmlFor="button">{cookie.getCookie('name')}
+              <Link to="/">
+                <button onClick={() => this.Exit()}>Exit</button>
+              </Link>
+            </label>
+          </p>
         </div>
-      );
-    }
+        <SortableList
+          mas={this.state.mas}
+          onSortEnd={this.onSortEnd}
+          axis="xy"
+          size={this.state.id}
+        />
+      </div>
+    )
+  }
 }
-export default App;
+export default Drag

@@ -9,49 +9,55 @@ var credential = require('../credential');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
 var path = '/home/developer1/Рабочий стол/Example/Web-project/Server/loginPassword.json';
+var userdefault = {name:'user', password:'user'}
+var usererror = {name:'error', password:'error'}
+router.use(bodyParser.json());
+router.get("/a",function(req, res){
 
-router.get("/",function(req, res){
-
+    res.json(userdefault);
+    console.log("+")
     /*router.use(require('cookie-parser')(credential.cookieSecret));
     router.use(require('express-session')({
         resave: false,
         saveUninitialized: false,
         secret: credential.cookieSecret
     }));*/
-})
-router.post("/registation",urlencodedParser, function(req,res){//регистрация
-    app.use(bodyParser.urlencoded({ extended: false }));
-    //router.use(require("body-parser").json());
-    console.log(req);
-    console.log(req.body.login+"qwere+");
-    var user={
-        "name": req.body.login,
-        "password" : req.body.password
-    }
+});
 
+router.post("/registration", function(req,res){//регистрация
+    console.log(req.body.user.login+"qwere+");
+    var user={
+        "name": req.body.user.login,
+        "password" : req.body.user.password
+    }
     let text = fs.readFileSync(path ,"utf8");
     text = text.replace(']',"");
     fs.writeFileSync(path ,text);
     fs.appendFileSync(path ,","+JSON.stringify(user)+"]");
-    //res.redirect("http://localhost:3000");
+    res.json({registration:true});
 });
+
 router.post("/login",urlencodedParser, function(req,res, next){
     let text = fs.readFileSync(path ,"utf8");
+    console.log(req.body.user)
     var user = {
-        "name":req.body.login,
-        "password":hash(req.body.password)
+        "name":req.body.user.login,
+        "password":req.body.user.password
     }
-    console.log(req.body);
     if(text.search(JSON.stringify(user))!==-1)
     {
         console.log("+");
-        res.redirect("http://localhost:3000/game");
+        res.json(user);
     }
     
     else{
         console.log("неверно!!!");
-        res.redirect("http://localhost:3000");
+        res.json(usererror);
     } 
+});
+router.get("/exit",urlencodedParser, function(req,res){
+    console.log("exit");
+   res.json({name:'user', password: 'user'}) 
 });
 
 
