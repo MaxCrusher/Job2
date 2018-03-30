@@ -9,8 +9,8 @@ export default class FormRegistrations extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      validition: false,
-      check: false,
+      validition: false, // валидация для отправки формы
+      check: false, // для рендера кнопки "назад"
     }
     this.CheckPassword = this.CheckPassword.bind(this)
     this.Registatioins = this.Registatioins.bind(this)

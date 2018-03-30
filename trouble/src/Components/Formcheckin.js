@@ -8,8 +8,8 @@ export default class FormCheckIn extends Component {
     super(props)
     this.singIn = this.singIn.bind(this)
     this.state = {
-      game: false,
-      validation: '',
+      game: false, // для рендеринга кпопки Link
+      validation: '', // сообщение о ошибке входа
     }
   }
   singIn() {
@@ -43,9 +43,9 @@ export default class FormCheckIn extends Component {
   render() {
     let singIn = null
     if (this.state.game === true) {
-      singIn = (
+      singIn = ( // onClick={() => this.props.fun()}
         <Link to="/game">
-          <button onClick={() => this.props.fun()}>Играаать</button>
+          <button >Играаать</button>
         </Link>
       )
     }

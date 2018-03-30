@@ -12,8 +12,8 @@ class Drag extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      mas: [],
-      id: 1,
+      mas: [], // массив элементов
+      id: 1, // размер игрового поля
     }
     this.onSortEnd = this.onSortEnd.bind(this)
     this.ChangeId = this.ChangeId.bind(this)
