@@ -1,20 +1,23 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { arrayMove } from 'react-sortable-hoc'
 import { Link } from 'react-router-dom'
 import SortableList from './Components/SortableList'
+import * as dragAction from './Action/Drag'
+import store from './store'
 import './App.css'
 
 const cookie = require('./Components/FunctionCookie/FunctionCookie.js')
 
-let mass = []
+const drag = {
+  mass: [],
+  id: 1,
+}
 
 class Drag extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      mas: [], // массив элементов
-      id: 1, // размер игрового поля
-    }
     this.onSortEnd = this.onSortEnd.bind(this)
     this.ChangeId = this.ChangeId.bind(this)
   }
@@ -25,28 +28,23 @@ class Drag extends Component {
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    this.setState({
-      mas: arrayMove(this.state.mas, oldIndex, newIndex),
-    })
+    drag.mass = arrayMove(this.props.mas, oldIndex, newIndex)
+    store.dispatch(dragAction.setDragMas(drag.mass))
   };
 
   ChangeId(e) {
-    this.setState({
-      id: e.target.value,
-    })
+    store.dispatch(dragAction.setDragId(e.target.value))
   }
 
   Change() {
-    mass = []
+    drag.mass = []
     let i = 0
-    while (i < this.state.id ** 2) {
-      mass.push(i)
+    while (i < this.props.id ** 2) {
+      drag.mass.push(i)
       i++
     }
-    mass.sort(() => Math.random() - 0.5)
-    this.setState({
-      mas: mass,
-    })
+    drag.mass.sort(() => Math.random() - 0.5)
+    store.dispatch(dragAction.setDragMas(drag.mass))
   }
 
   Exit() {
@@ -57,7 +55,6 @@ class Drag extends Component {
       })
     })
   }
-  //                        <div>{this.Cool()}</div>
   render() {
     return (
       <div>
@@ -68,7 +65,7 @@ class Drag extends Component {
               name="text"
               className="inputtext"
               onChange={this.ChangeId}
-              value={this.state.id}
+              value={this.props.id}
             />
             <button
               type="button"
@@ -76,7 +73,7 @@ class Drag extends Component {
               id="inputbut"
               onClick={() => { this.Change() }}
             >
-              OK
+              OK{console.log(this.props.id)}
             </button>
           </p>
           <p>
@@ -88,13 +85,26 @@ class Drag extends Component {
           </p>
         </div>
         <SortableList
-          mas={this.state.mas}
+          mas={this.props.mas}
           onSortEnd={this.onSortEnd}
           axis="xy"
-          size={this.state.id}
+          size={this.props.id}
         />
       </div>
     )
   }
 }
-export default Drag
+
+function mapStateToProps(state) {
+  return {
+    mas: state.drag.mas,
+    id: state.drag.id,
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    dragAction: bindActionCreators(dragAction, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Drag)

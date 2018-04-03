@@ -1,21 +1,17 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import FormCheckIn from './Components/Formcheckin'
 import FormRegistration from './Components/FormRegistration'
 import Drag from './Drag'
+import * as singAction from './Action/SingIn'
 import './App.css'
 
 const cookie = require('./Components/FunctionCookie/FunctionCookie.js')
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    /*this.state = {
-      val: false, // проверка аутентификации для авторизации  
-    }*/
-    //this.validation = this.validation.bind(this)
-  }
+  
   componentWillMount() {
     if (!cookie.getCookie('name')) {
       fetch('/a').then(res => {
@@ -25,13 +21,9 @@ class App extends Component {
         })
       })
     }
-    console.log(this.props.game)
+    console.log(singAction)
   }
-  /*validation() {
-    this.setState({
-      val: true,
-    })
-  }*/
+
   render() {
     return (
       <Router>
@@ -57,5 +49,10 @@ function mapStateToProps(state) {
     game: state.sing.val,
   }
 }
-
+/*function mapDispatchToProps(dispatch) {
+  return {
+    singAction: bindActionCreators(singAction, dispatch),
+  }
+}
+*/
 export default connect(mapStateToProps)(App)

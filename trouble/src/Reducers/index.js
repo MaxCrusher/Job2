@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux'
-import SingIn from '../Reducers/SingIn'
-import Registration from '../Reducers/Registation'
+import SingIn from './SingIn'
+import Registration from './Registation'
+import Drag from './Drag'
 
 const allReducers = combineReducers({
   sing: SingIn,
-  registration: Registration,
+  reg: Registration,
+  drag: Drag,
 })
 export default allReducers

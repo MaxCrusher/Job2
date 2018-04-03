@@ -1,0 +1,14 @@
+{
+    "sing":{
+        "game": false,
+        "message": ""
+    },
+    "registr":{
+        "validition": false,
+        "check": false
+    },
+    "drag":{
+        "id": 1,
+        "mas": []
+    }
+}

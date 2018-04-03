@@ -1,17 +1,25 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Hash from 'js-hash-code'
 import '../Css/Form.css'
+import * as regAction from '../Action/Registration'
+import store from '../store'
 
 let firsrtPassword
 let secondPassword
-export default class FormRegistrations extends Component {
+const reg = {
+  validation: false,
+  check: false,
+}
+class FormRegistrations extends Component {
   constructor(props) {
     super(props)
-    this.state = {
+    /*this.state = {
       validition: false, // валидация для отправки формы
       check: false, // для рендера кнопки "назад"
-    }
+    }*/
     this.CheckPassword = this.CheckPassword.bind(this)
     this.Registatioins = this.Registatioins.bind(this)
   }
@@ -24,21 +32,18 @@ export default class FormRegistrations extends Component {
       secondPassword = Hash(e.target.value)
     }
     if (firsrtPassword === secondPassword) {
-      this.setState({
-        validition: true,
-      })
+      store.dispatch(regAction.setRegValTrue(reg))
     } else {
-      this.setState({
-        validition: false,
-      })
+      store.dispatch(regAction.setRegValFalse(reg))
     }
   }
+
   Registatioins() {
     const user = {
       login: document.getElementById('login').value,
       password: secondPassword,
     }
-    if (this.state.validition === true) {
+    if (this.props.validation === true) {
       fetch('/registration', {
         method: 'POST',
         body: JSON.stringify({ user }),
@@ -46,9 +51,7 @@ export default class FormRegistrations extends Component {
       }).then(res => {
         res.json().then((data) => {
           if (data.registration === true) {
-            this.setState({
-              check: true,
-            })
+            store.dispatch(regAction.setRegCheckTrue(reg))
           }
         })
       })
@@ -56,7 +59,7 @@ export default class FormRegistrations extends Component {
   }
   render() {
     let link = null
-    if (this.state.check === true) {
+    if (this.props.check === true) {
       link = (
         <Link to="/">
           <button>Назад</button>
@@ -82,7 +85,7 @@ export default class FormRegistrations extends Component {
               placeholder="password"
               id="firsrtPassword"
               name="firsrtPassword"
-              onChange={() => this.CheckPassword()}
+              onChange={this.CheckPassword.bind(this)}
             />
           </p>
           <p className="Login">
@@ -92,9 +95,9 @@ export default class FormRegistrations extends Component {
               placeholder="repeat password"
               id="secondPassword"
               name="secondPassword"
-              onChange={() => this.CheckPassword()}
+              onChange={this.CheckPassword.bind(this)}
               style={
-                this.state.validition
+                this.props.validation
                   ? { backgroundColor: 'green' }
                   : { backgroundColor: 'red' }
               }
@@ -109,3 +112,17 @@ export default class FormRegistrations extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    validation: state.reg.validation,
+    check: state.reg.check,
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    regAction: bindActionCreators(regAction, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormRegistrations)

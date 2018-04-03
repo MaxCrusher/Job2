@@ -1,16 +1,21 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import Hash from 'js-hash-code'
+import * as singAction from '../Action/SingIn'
+import store from '../store'
 import '../Css/Form.css'
 
-export default class FormCheckIn extends Component {
+const sing = {
+  val: false,
+  message: '',
+}
+
+class FormCheckIn extends Component {
   constructor(props) {
     super(props)
     this.singIn = this.singIn.bind(this)
-    this.state = {
-      game: false, // для рендеринга кпопки Link
-      validation: '', // сообщение о ошибке входа
-    }
   }
   singIn() {
     const user = {
@@ -25,24 +30,18 @@ export default class FormCheckIn extends Component {
       res.json().then(resCookie => {
         if (resCookie.name === 'error') {
           document.cookie = 'name=' + resCookie.name
-          this.setState({
-            validation: 'error',
-          })
+          store.dispatch(singAction.setSingValFalse(sing))
         } else {
           document.cookie = 'name=' + resCookie.name
           document.cookie = 'password=' + resCookie.password
-          this.setState({
-            game: true,
-            validation: '',
-          })
+          store.dispatch(singAction.setSingValTrue(sing))
         }
       })
     })
   }
-
   render() {
     let singIn = null
-    if (this.state.game === true) {
+    if (this.props.game === true) {
       singIn = ( // onClick={() => this.props.fun()}
         <Link to="/game">
           <button >Играаать</button>
@@ -53,7 +52,7 @@ export default class FormCheckIn extends Component {
       <div>
         <form className="Form" name="CheckIn">
           <p className="Login">
-            <label htmlFor="Login">{this.state.validation}
+            <label htmlFor="Login">{this.props.message}
               <input
                 type="text"
                 size="30"
@@ -84,3 +83,17 @@ export default class FormCheckIn extends Component {
     )
   }
 }
+function mapStateToProps(state) {
+  return {
+    game: state.sing.val,
+    message: state.sing.message,
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    singAction: bindActionCreators(singAction, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormCheckIn)
+
