@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import FormCheckIn from './Components/Formcheckin'
 import FormRegistration from './Components/FormRegistration'
 import Drag from './Drag'
 import * as singAction from './Action/SingIn'
+import * as API from './Servises'
 import './App.css'
 
 const cookie = require('./Components/FunctionCookie/FunctionCookie.js')
@@ -14,14 +14,11 @@ class App extends Component {
   
   componentWillMount() {
     if (!cookie.getCookie('name')) {
-      fetch('/a').then(res => {
-        res.json().then((data) => {
-          cookie.setCookie('name', data.name)
-          cookie.setCookie('password', data.password)
-        })
+      API.InitialCookie((data) => {
+        cookie.setCookie('name', data.name)
+        cookie.setCookie('password', data.password)
       })
     }
-    console.log(singAction)
   }
 
   render() {
@@ -31,7 +28,7 @@ class App extends Component {
           <Route
             exact
             path="/"
-            render={() => <FormCheckIn />} // fun={() => this.validation()}
+            render={() => <FormCheckIn />}
           />
           <Route path="/registration" render={() => <FormRegistration />} />
           <Route
@@ -49,10 +46,4 @@ function mapStateToProps(state) {
     game: state.sing.val,
   }
 }
-/*function mapDispatchToProps(dispatch) {
-  return {
-    singAction: bindActionCreators(singAction, dispatch),
-  }
-}
-*/
 export default connect(mapStateToProps)(App)

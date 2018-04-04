@@ -8,9 +8,9 @@ const initialState = {
 export default function drag(state = initialState, action) {
   switch (action.type) {
     case types.SET_DRAG_ID:
-      return { ...state, id: action.id }
+      return Object.assign({}, state, { id: action.id })
     case types.SET_DRAG_MAS:
-      return { ...state, mas: action.mas }
+      return Object.assign({}, state, { mas: action.mas })
     default: 
       return state
   }

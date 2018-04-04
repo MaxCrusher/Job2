@@ -1,15 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import SortableList from '../SortableList';
-import 'jest-enzyme';
-import sinon from 'sinon';
-import Enzyme, {mount, shallow, render} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import React from 'react'
+import Enzyme, { render } from 'enzyme'
+import { describe, it, expect } from 'jest-enzyme'
+import sinon from 'sinon'
+import Adapter from 'enzyme-adapter-react-16'
+import SortableList from '../SortableList'
 
-Enzyme.configure({adapter: new Adapter()});
-let mass=[0,1,2,3];
-let alert;
-describe('<SortableList/> ', ()=>{
+Enzyme.configure({ adapter: new Adapter() })
+let mass = [0, 1, 2, 3]
+let alert
+describe('<SortableList/> ', () => {
   beforeEach(function() {
     alert = sinon.spy();
   });

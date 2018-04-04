@@ -5,6 +5,7 @@ import { arrayMove } from 'react-sortable-hoc'
 import { Link } from 'react-router-dom'
 import SortableList from './Components/SortableList'
 import * as dragAction from './Action/Drag'
+import * as API from './Servises'
 import store from './store'
 import './App.css'
 
@@ -48,11 +49,9 @@ class Drag extends Component {
   }
 
   Exit() {
-    fetch('/exit').then(res => {
-      res.json().then((data) => {
-        document.cookie = 'name=' + data.name
-        document.cookie = 'password=' + data.password
-      })
+    API.Exit((data) => {
+      document.cookie = 'name=' + data.name
+      document.cookie = 'password=' + data.password
     })
   }
   render() {

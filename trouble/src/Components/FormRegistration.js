@@ -6,6 +6,7 @@ import Hash from 'js-hash-code'
 import '../Css/Form.css'
 import * as regAction from '../Action/Registration'
 import store from '../store'
+import * as API from '../Servises'
 
 let firsrtPassword
 let secondPassword
@@ -16,10 +17,6 @@ const reg = {
 class FormRegistrations extends Component {
   constructor(props) {
     super(props)
-    /*this.state = {
-      validition: false, // валидация для отправки формы
-      check: false, // для рендера кнопки "назад"
-    }*/
     this.CheckPassword = this.CheckPassword.bind(this)
     this.Registatioins = this.Registatioins.bind(this)
   }
@@ -44,16 +41,10 @@ class FormRegistrations extends Component {
       password: secondPassword,
     }
     if (this.props.validation === true) {
-      fetch('/registration', {
-        method: 'POST',
-        body: JSON.stringify({ user }),
-        headers: { 'Content-Type': 'application/json' },
-      }).then(res => {
-        res.json().then((data) => {
-          if (data.registration === true) {
-            store.dispatch(regAction.setRegCheckTrue(reg))
-          }
-        })
+      API.Registration(user, (data) => {
+        if (data.registration === true) {
+          store.dispatch(regAction.setRegCheckTrue(data))
+        }
       })
     }
   }

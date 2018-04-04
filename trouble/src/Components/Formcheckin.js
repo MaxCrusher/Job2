@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import Hash from 'js-hash-code'
 import * as singAction from '../Action/SingIn'
 import store from '../store'
+import * as API from '../Servises'
 import '../Css/Form.css'
 
 const sing = {
@@ -22,27 +23,21 @@ class FormCheckIn extends Component {
       login: document.getElementById('login').value,
       password: Hash(document.getElementById('password').value),
     }
-    fetch('/login', {
-      method: 'POST',
-      body: JSON.stringify({ user }),
-      headers: { 'Content-Type': 'application/json' },
-    }).then(res => {
-      res.json().then(resCookie => {
-        if (resCookie.name === 'error') {
-          document.cookie = 'name=' + resCookie.name
-          store.dispatch(singAction.setSingValFalse(sing))
-        } else {
-          document.cookie = 'name=' + resCookie.name
-          document.cookie = 'password=' + resCookie.password
-          store.dispatch(singAction.setSingValTrue(sing))
-        }
-      })
+    API.SingIn(user, (data) => {
+      if (data.name === 'error') {
+        document.cookie = 'name=' + data.name
+        store.dispatch(singAction.setSingValFalse(sing))
+      } else {
+        document.cookie = 'name=' + data.name
+        document.cookie = 'password=' + data.password
+        store.dispatch(singAction.setSingValTrue(sing))
+      }
     })
   }
   render() {
     let singIn = null
     if (this.props.game === true) {
-      singIn = ( // onClick={() => this.props.fun()}
+      singIn = (
         <Link to="/game">
           <button >Играаать</button>
         </Link>
